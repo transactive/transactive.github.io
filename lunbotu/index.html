@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<meta charset="UTF-8">
+	<style type="text/css">
+	 #container
+	 {
+	 	width: 600px;height: 400px;position: relative;border: 3px solid #333;border-radius: 3px; /*overflow: hidden;*/
+	 }
+	 #pic
+	 {
+	 	width: 4200px;height: 400px;position: absolute;
+	 }
+	 #pic img
+	 {
+	 	float: left;
+	 }
+	 #buttons
+	 {
+	 	position:absolute; width: 100px; left: 250px; bottom: 20px; 
+	 }
+	 #buttons span
+	 {
+	 	cursor: pointer; float: left; border: 1px solid #fff; width: 10px; height: 10px; border-radius: 50%; background: #333; margin-right: 5px;
+	 }
+	 #buttons .on{background: orangered;}
+	 .arrow{cursor: pointer; display: none; line-height: 39px; text-align: center; font-size: 36px; font-weight: bold; width: 40px; height: 40px;  position: absolute;top: 180px; background-color: RGBA(0,0,0,.3); color: #fff;}
+	 .arrow:hover { background-color: RGBA(0,0,0,.7);}
+     #container:hover .arrow { display: block;}
+     #prev { left: 20px;}
+     #next { right: 20px;}
+	</style>
+	<script type="text/javascript">
+		window.onload = function()
+		{
+			var pic=document.getElementById('pic');
+			var prev=document.getElementById('prev');
+			var next=document.getElementById('next');
+			var buttons=document.getElementById('buttons').getElementsByTagName('span');
+			var index=1;
+			var animated=false;
+			var timer;
+			function showButton()
+			{
+				for(var i=0;i<buttons.length;i++)
+				{
+					buttons[i].className="";
+				}
+				buttons[index-1].className="on";
+                
+			}
+			function animate(offset)
+			{   
+				animated=true;
+				var newLeft=parseInt(pic.style.left) + offset;
+				var time=300;
+				var interval=10;
+				var speed=offset/(time/interval);
+				function go()
+				{
+					if((speed<0&&newLeft<parseInt(pic.style.left))||(speed>0&&newLeft>parseInt(pic.style.left)))
+					{
+						pic.style.left=parseInt(pic.style.left) + speed+'px';
+						setTimeout(go,interval);
+					}
+					else
+					{
+						
+					   pic.style.left = newLeft + 'px';
+				       if(newLeft<-3000)
+               	       {
+               		        pic.style.left=-600+"px";
+               	       }
+                        if(newLeft>-600)
+               	       {
+               		        pic.style.left=-3000+"px";
+               	       }
+               	       animated=false;
+					}
+				}
+				go();    
+			}
+			function play()
+			{
+				timer=setInterval(function(){
+					next.onclick();
+
+				},3000)
+			}
+			function stop()
+			{
+				clearInterval(timer);
+			}
+			next.onclick = function()
+			{
+				if (animated) {
+                    return;
+                }
+			    if(index==5)
+			    {
+			    	index=1;
+			    }
+		        else 
+		        {
+		        	index=index+1;
+		        }
+		        
+		        	animate(-600);
+		        	showButton();		
+			}			
+			prev.onclick = function()
+			{
+				if (animated) {
+                    return;
+                }
+
+				if(index==1)
+			    {
+			    	index=5;
+			    }
+		        else 
+		        {
+		        	index=index-1;
+		        }
+				
+		        	animate(600);
+		        	showButton();		        				
+			}
+			for(var i=0;i<buttons.length;i++)
+			{
+				buttons[i].onclick=function()
+				{
+					if (animated) {
+                    return;
+                }
+					if(this.className=='on')
+					{
+                         return;
+					}
+					var newIndex=parseInt(this.getAttribute("index"));
+					var offset=-600*(newIndex-index);
+					if(animated==false)
+		        {
+		        	animate(offset);
+		        	showButton();
+		        }
+					index=newIndex;					
+				}
+			}
+			container.onmouseover=stop;
+			container.onmouseout=play;	
+			play();		
+		}
+	</script>
+</head>
+<body>
+<div id="container">
+    <div id="pic" style="left: -600px;">
+        <img src="images/5.jpg" alt="1"/>
+        <img src="images/1.jpg" alt="1"/>
+        <img src="images/2.jpg" alt="2"/>
+        <img src="images/3.jpg" alt="3"/>
+        <img src="images/4.jpg" alt="4"/>
+        <img src="images/5.jpg" alt="5"/>
+        <img src="images/1.jpg" alt="5"/>
+    </div>
+    <div id="buttons">
+        <span index="1" class="on"></span>
+        <span index="2"></span>
+        <span index="3"></span>
+        <span index="4"></span>
+        <span index="5"></span>
+    </div>
+    <a href="javascript:;" id="prev" class="arrow">&lt;</a>
+    <a href="javascript:;" id="next" class="arrow">&gt;</a>
+</div>
+</body>
+</html>
